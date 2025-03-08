@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/db/main.ts","./src/middlewares/auth.ts","./src/routes/session.ts","./src/routes/student.ts","./src/routes/teacher.ts"],"version":"5.6.3"}

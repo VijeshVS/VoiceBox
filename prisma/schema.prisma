@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id        Int        @id @default(autoincrement())
+  name      String
+  email     String     @unique
+  password  String
+  sessions  StudentSession[]
+  feedback_history FeedbackSubmitHistory[]
+}
+
+model Teacher {
+  id        Int        @id @default(autoincrement())
+  name      String
+  email     String     @unique
+  password  String
+  sessions  Sessions[]
+}
+
+model Sessions {
+  id        Int        @id @default(autoincrement())
+  teacherId Int
+  date      DateTime
+  teacher   Teacher    @relation(fields: [teacherId], references: [id])
+  students  StudentSession[]
+  feedback  SessionFeedback[]
+  feedback_history   FeedbackSubmitHistory[]
+}
+
+// Prisma doesnt support many-to-many relationships, so we need to create a join table
+model StudentSession {
+  studentId Int
+  sessionId Int
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  session   Sessions @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@id([studentId, sessionId])
+}
+
+model SessionFeedback {
+  id        Int      @id @default(autoincrement())
+  sessionId Int
+  rating Int
+  feedback  String
+  session   Sessions @relation(fields: [sessionId], references: [id])
+}
+
+model FeedbackSubmitHistory {
+  id        Int      @id @default(autoincrement())
+  sessionId Int
+  studentId Int
+  session   Sessions @relation(fields: [sessionId], references: [id])
+  student   Student  @relation(fields: [studentId], references: [id])
+}
