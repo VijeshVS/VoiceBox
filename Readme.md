@@ -1,207 +1,111 @@
-# Session, Student & Teacher API
+# VoiceBox
 
-This API manages session creation, retrieval, feedback, and ratings for teachers and students. It also includes student and teacher authentication and session participation.
-
-## Base URLs
-```
-http://localhost:3000/session
-http://localhost:3000/student
-http://localhost:3000/teacher
-```
+**VoiceBox** is an anonymous feedback platform designed for students to submit feedback on sessions. It allows teachers to create sessions, track feedback submissions, and view overall ratings and comments. Students can anonymously provide feedback without revealing their identity, fostering a safe space for honest input.
 
 ---
 
-## Session Endpoints
+## Features
 
-### 1. Create a Session
-**POST** `/create-session`
+- **Teacher Features**:
+  - Create new sessions for students to submit feedback.
+  - View students who have or have not submitted feedback.
+  - Access anonymous feedback responses for each session.
+  - View overall session ratings.
 
-#### Request
-Headers:
-- `teacher-id` (number, required): ID of the teacher creating the session.
-
-Body:
-- `date` (string, required): Date of the session in `YYYY-MM-DD` format.
-
-#### Response
-- `id` (number): Session ID.
-- `date` (string): Date of the session.
-- `teacherId` (number): ID of the teacher who created the session.
+- **Student Features**:
+  - Join sessions created by teachers.
+  - Submit anonymous feedback for each session.
+  - Provide ratings and comments without their responses being linked to them.
 
 ---
 
-### 2. Get Sessions for a Teacher
-**GET** `/get-session`
+## Tech Stack
 
-#### Request
-Headers:
-- `teacher-id` (number, required): ID of the teacher.
+- **Backend**:
+  - **TypeScript** - For type-safe development.
+  - **Express** - Web framework for building REST APIs.
+  - **Prisma ORM** - For easy and efficient database queries.
+  - **PostgreSQL** - Relational database to store user data and feedback information.
 
-#### Response
-Array of objects containing:
-- `id` (number): Session ID.
-- `date` (string): Date of the session.
-- `teacherId` (number): ID of the teacher.
-
----
-
-### 3. Get All Sessions
-**GET** `/get-all-sessions`
-
-#### Response
-Array of objects containing:
-- `id` (number): Session ID.
-- `date` (string): Date of the session.
-- `teacherId` (number): ID of the teacher.
+- **Frontend**:
+  - **React.js** - JavaScript library for building user interfaces.
+  - **TailwindCSS** - Utility-first CSS framework for fast styling.
+  - **Lucid React** - A library for visualizing data in the frontend.
+  - **Zod** - TypeScript-first schema declaration and validation.
 
 ---
 
-### 4. Get Sessions for a Student
-**GET** `/get-student-sessions`
+## Getting Started
 
-#### Request
-Headers:
-- `student-id` (number, required): ID of the student.
+### Prerequisites
 
-#### Response
-Array of objects containing:
-- `id` (number): Session ID.
-- `date` (string): Date of the session.
-- `teacherId` (number): ID of the teacher.
+- Node.js (v14 or higher)
+- PostgreSQL (or access to a PostgreSQL database)
 
----
+### Installation
 
-### 5. Get Feedback for a Session
-**GET** `/get-feedback?sessionId={sessionId}`
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/voicebox.git
+   cd voicebox
+   ```
 
-#### Request
-Query Parameters:
-- `sessionId` (number, required): ID of the session.
+2. Install the dependencies:
+   ```bash
+   npm install
+   ```
 
-#### Response
-Array of objects containing:
-- `id` (number): Feedback ID.
-- `sessionId` (number): ID of the session.
-- `feedback` (string): Feedback content.
-- `rating` (number): Rating given.
+3. Set up the PostgreSQL database and configure the connection in `.env`:
+   ```env
+   DATABASE_URL="postgresql://username:password@localhost:5432/database_name?schema=public"
+   ```
 
----
+4. Run the Prisma migrations to set up the database schema:
+   ```bash
+   npx prisma migrate dev
+   ```
 
-### 6. Get Rating for a Session
-**GET** `/get-rating?sessionId={sessionId}`
+5. Start the backend server:
+   ```bash
+   npm run dev
+   ```
 
-#### Request
-Query Parameters:
-- `sessionId` (number, required): ID of the session.
-
-#### Response
-- `totalRating` (number): Average rating of the session.
-
----
-
-### 7. Get Students Who Haven't Submitted Feedback
-**GET** `/no-feedback?sessionId={sessionId}`
-
-#### Request
-Query Parameters:
-- `sessionId` (number, required): ID of the session.
-
-#### Response
-Array of objects containing:
-- `id` (number): Student ID.
-- `name` (string): Name of the student.
+6. For the frontend:
+   - Navigate to the frontend directory:
+     ```bash
+     cd frontend
+     ```
+   - Install the frontend dependencies:
+     ```bash
+     npm install
+     ```
+   - Start the frontend server:
+     ```bash
+     npm run dev
+     ```
 
 ---
 
-## Student Endpoints
+## Usage
 
-### 1. Register a Student
-**POST** `/register`
-
-#### Request
-Body:
-- `name` (string, required): Name of the student.
-- `email` (string, required): Email of the student.
-- `password` (string, required): Password for the student account.
-
-#### Response
-- `msg` (string): Registration success message.
-- `token` (string): JWT authentication token.
+- **Teachers** can log in, create sessions, and manage feedback submissions.
+- **Students** can join the sessions and provide anonymous feedback.
+- All feedback from students will be anonymous and cannot be traced back to the individual student.
+- Teachers can view aggregated feedback and the overall rating for each session.
 
 ---
 
-### 2. Student Login
-**POST** `/login`
+## Contributing
 
-#### Request
-Body:
-- `email` (string, required): Email of the student.
-- `password` (string, required): Password of the student.
+If you'd like to contribute to **VoiceBox**, feel free to fork the repository and submit a pull request. Please ensure that your code adheres to the following guidelines:
 
-#### Response
-- `msg` (string): Login success message.
-- `token` (string): JWT authentication token.
+- Follow the [Code of Conduct](#).
+- Write clear, concise commit messages.
+- Ensure your code passes linting and formatting checks.
+- Add tests for new features or bug fixes.
 
 ---
 
-### 3. Submit Feedback
-**POST** `/submit-feedback`
+## License
 
-#### Request
-Headers:
-- `student-id` (number, required): ID of the student.
-
-Body:
-- `rating` (number, required): Rating given by the student.
-- `feedback` (string, required): Feedback text.
-- `sessionId` (number, required): ID of the session.
-
-#### Response
-- `message` (string): Feedback submission status.
-
----
-
-### 4. Join a Session
-**POST** `/join-session`
-
-#### Request
-Headers:
-- `student-id` (number, required): ID of the student.
-
-Body:
-- `sessionId` (number, required): ID of the session to join.
-
-#### Response
-- `message` (string): Session joining status.
-
----
-
-## Teacher Endpoints
-
-### 1. Register a Teacher
-**POST** `/register`
-
-#### Request
-Body:
-- `name` (string, required): Name of the teacher.
-- `email` (string, required): Email of the teacher.
-- `password` (string, required): Password for the teacher account.
-
-#### Response
-- `msg` (string): Registration success message.
-- `token` (string): JWT authentication token.
-
----
-
-### 2. Teacher Login
-**POST** `/login`
-
-#### Request
-Body:
-- `email` (string, required): Email of the teacher.
-- `password` (string, required): Password of the teacher.
-
-#### Response
-- `msg` (string): Login success message.
-- `token` (string): JWT authentication token.
-
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
