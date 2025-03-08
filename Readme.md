@@ -4,9 +4,9 @@ This API manages session creation, retrieval, feedback, and ratings for teachers
 
 ## Base URLs
 ```
-http://your-domain.com/api/session
-http://your-domain.com/api/student
-http://your-domain.com/api/teacher
+http://localhost:3000/session
+http://localhost:3000/student
+http://localhost:3000/teacher
 ```
 
 ---
