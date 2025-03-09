@@ -1,5 +1,6 @@
-import { MessageSquare, Shield, Users, BarChart3, ChevronRight, Star, School } from 'lucide-react';
+import { MessageSquare, Shield, Users, BarChart3, ChevronRight, Star, School, Github } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -36,13 +37,16 @@ function LandingPage() {
               Empower students to provide honest feedback while maintaining their privacy. Create a better learning environment through transparent communication.
             </p>
             <div className="flex justify-center gap-4">
-              <button onClick={()=>navigate('/login')} className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition flex items-center">
+              <button onClick={()=>{navigate('/login')
+                toast.info('Please login to get started.')
+              }} className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition flex items-center">
                 Start Collecting Feedback
                 <ChevronRight className="ml-2 h-5 w-5" />
               </button>
-              <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition">
-                Learn More
-              </button>
+                <button onClick={() => window.location.href='https://github.com/VijeshVS/VoiceBox'} className="border items-center flex border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition">
+                <h1>Github</h1>
+                <Github className="ml-2 h-5 w-5" />
+                </button>
             </div>
           </div>
         </div>
@@ -57,23 +61,23 @@ function LandingPage() {
               Our platform provides everything you need to gather and analyze student feedback effectively.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-3 gap-8">
             <FeatureCard
               icon={<Shield className="h-8 w-8 text-indigo-600" />}
               title="Complete Anonymity"
               description="Students can share their thoughts freely without fear of identification."
             />
             <FeatureCard
-              icon={<BarChart3 className="h-8 w-8 text-indigo-600" />}
-              title="Detailed Analytics"
-              description="Get comprehensive insights into feedback patterns and trends."
+              icon={<MessageSquare className="h-8 w-8 text-indigo-600" />}
+              title="Feedback Display"
+              description="View all feedback in an organized and easy-to-read format."
             />
             <FeatureCard
-              icon={<Users className="h-8 w-8 text-indigo-600" />}
-              title="Easy Session Management"
-              description="Create and manage feedback sessions with just a few clicks."
+              icon={<Star className="h-8 w-8 text-indigo-600" />}
+              title="Average Rating"
+              description="See the average rating for each session at a glance."
             />
-          </div>
+            </div>
         </div>
       </section>
 
@@ -118,7 +122,12 @@ function LandingPage() {
           <p className="text-indigo-100 mb-8 max-w-2xl mx-auto">
             Join thousands of educators who are already improving their teaching through anonymous student feedback.
           </p>
-          <button className="bg-white text-indigo-600 px-8 py-3 rounded-lg hover:bg-indigo-50 transition font-medium">
+          <button onClick={
+            () => {
+              navigate('/login')
+              toast.info('Please login to create a session.')
+            }
+          } className="bg-white text-indigo-600 px-8 py-3 rounded-lg hover:bg-indigo-50 transition font-medium">
             Create Your First Session
           </button>
         </div>

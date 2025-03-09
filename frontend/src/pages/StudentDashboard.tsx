@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import {
   Calendar,
   Star,
@@ -25,6 +25,7 @@ function StudentDashboard() {
   const [rating, setRating] = useState(7);
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     loadSessions();
@@ -71,7 +72,7 @@ function StudentDashboard() {
       setRating(7);
       loadSessions();
     } catch (error) {
-      toast.error("Failed to submit feedback");
+      toast.error("Feedback submitted already");
     }
   };
 
@@ -85,7 +86,7 @@ function StudentDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div ref={scrollRef} className="min-h-screen bg-gray-50">
       <nav className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between h-16 px-4 sm:px-6 lg:px-8">
@@ -228,7 +229,16 @@ function StudentDashboard() {
                         </p>
                       </div>
                       <button
-                        onClick={() => setSelectedSession(session)}
+                        onClick={() => {
+                          setSelectedSession(session);
+                          
+                          if(scrollRef.current) {
+                            // @ts-ignore
+                            scrollRef.current?.scrollIntoView({
+                              behavior: "smooth",
+                            });
+                          }
+                        } }
                         className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-all duration-200 transform group-hover:scale-105"
                       >
                         <MessageSquare className="h-5 w-5 mr-2" />
@@ -319,7 +329,7 @@ function StudentDashboard() {
                     value={feedback}
                     onChange={(e) => setFeedback(e.target.value)}
                     rows={4}
-                    className="w-full rounded-xl border-gray-200 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50 resize-none"
+                    className="w-full rounded-xl p-4 border-gray-200 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50 resize-none"
                     placeholder="Share your thoughts about the session..."
                   />
                 </div>

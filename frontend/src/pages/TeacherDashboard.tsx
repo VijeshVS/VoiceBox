@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import {
-  Calendar,
   Users,
   LogOut,
   Plus,
@@ -10,7 +9,6 @@ import {
   ChevronDown,
   ChevronUp,
   BarChart,
-  User,
   Book,
   MessageSquare,
 } from "lucide-react";
@@ -265,7 +263,7 @@ function TeacherDashboard() {
                     Feedback Received
                   </h3>
                   <div className="space-y-3">
-                    {sessionFeedbacks.map((feedback) => (
+                    {sessionFeedbacks.map((feedback,index) => (
                       <div
                         key={feedback.id}
                         className="border border-gray-200 rounded-lg overflow-hidden"
@@ -284,7 +282,7 @@ function TeacherDashboard() {
                               ))}
                             </div>
                             <span className="ml-3 text-gray-600">
-                              Feedback #{feedback.id}
+                              Feedback #{index+1}
                             </span>
                           </div>
                           {expandedFeedback === feedback.id ? (
