@@ -27,11 +27,12 @@
   - **Prisma ORM** - For easy and efficient database queries.
   - **PostgreSQL** - Relational database to store user data and feedback information.
 
-- **Frontend**:
-  - **React.js** - JavaScript library for building user interfaces.
-  - **TailwindCSS** - Utility-first CSS framework for fast styling.
-  - **Lucid React** - A library for visualizing data in the frontend.
-  - **Zod** - TypeScript-first schema declaration and validation.
+- **Frontend**:  
+  - **React.js** - JavaScript library for building user interfaces.  
+  - **TailwindCSS** - Utility-first CSS framework for fast styling.  
+  - **Lucid React** - A library for visualizing data in the frontend.  
+  - **Zod** - TypeScript-first schema declaration and validation.  
+  - **Zustand** - A small, fast, and scalable state management library.  
 
 ---
 
