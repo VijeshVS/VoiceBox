@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import { LogIn, School } from "lucide-react";
 import { auth } from "../services/api";
 import { useAuthStore } from "../store/authStore";
+import { useEffect } from "react";
 
 const schema = z.object({
   email: z.string().email(),
@@ -26,20 +27,28 @@ function Login() {
     resolver: zodResolver(schema),
   });
 
+  const user = useAuthStore((state) => state.user);
+
   const onSubmit = async (data: LoginForm) => {
     try {
       const loginFn =
         data.role === "student" ? auth.studentLogin : auth.teacherLogin;
       const response = await loginFn(data.email, data.password);
-      setAuth(response.data.user, response.data.token);
+      setAuth({ ...response.data.user, role: data.role }, response.data.token);
       navigate(`/${data.role}-dashboard`);
     } catch (error) {
       toast.error("Invalid credentials");
     }
   };
 
+  useEffect(() => {
+    if (user) {
+      navigate(`/${user.role}-dashboard`);
+    }
+  });
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br px-4">
       <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md">
         <div className="flex items-center justify-center mb-6">
           <School className="h-14 w-14 text-indigo-600" />

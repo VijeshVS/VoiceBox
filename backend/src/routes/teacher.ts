@@ -24,6 +24,11 @@ teacherRouter.post(
           email,
           password,
         },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+        },
       });
 
       const token = jwt.sign(
@@ -35,6 +40,7 @@ teacherRouter.post(
       );
 
       return res.json({
+        user: teacher,
         msg: "Teacher registered successfully",
         token,
       });
@@ -63,6 +69,11 @@ teacherRouter.post(
           email,
           password,
         },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+        },
       });
 
       if (!teacher) {
@@ -80,6 +91,7 @@ teacherRouter.post(
       );
 
       return res.json({
+        user: teacher,
         msg: "Teacher logged in successfully",
         token,
       });

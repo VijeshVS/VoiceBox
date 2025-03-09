@@ -1,20 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { Calendar, Users, LogOut, Plus, Star, ChevronDown, ChevronUp, BarChart } from 'lucide-react';
-import { sessions } from '../services/api';
-import { useAuthStore } from '../store/authStore';
-import { Session, Student, Feedback, SessionRating } from '../types';
-import { format } from 'date-fns';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import {
+  Calendar,
+  Users,
+  LogOut,
+  Plus,
+  Star,
+  ChevronDown,
+  ChevronUp,
+  BarChart,
+  User,
+  Book,
+  MessageSquare,
+} from "lucide-react";
+import { sessions } from "../services/api";
+import { useAuthStore } from "../store/authStore";
+import { Session, Student, Feedback, SessionRating } from "../types";
+import { format } from "date-fns";
 
 function TeacherDashboard() {
   const [teacherSessions, setTeacherSessions] = useState<Session[]>([]);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [noFeedbackStudents, setNoFeedbackStudents] = useState<Student[]>([]);
   const [sessionFeedbacks, setSessionFeedbacks] = useState<Feedback[]>([]);
-  const [sessionRating, setSessionRating] = useState<SessionRating | null>(null);
+  const [sessionRating, setSessionRating] = useState<SessionRating | null>(
+    null
+  );
   const [showCreateSession, setShowCreateSession] = useState(false);
-  const [newSessionDate, setNewSessionDate] = useState('');
+  const [newSessionDate, setNewSessionDate] = useState("");
   const [expandedFeedback, setExpandedFeedback] = useState<number | null>(null);
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
@@ -28,41 +42,43 @@ function TeacherDashboard() {
       const response = await sessions.getTeacherSessions();
       setTeacherSessions(response.data);
     } catch (error) {
-      toast.error('Failed to load sessions');
+      console.log(error);
+      toast.error("Failed to load sessions");
     }
   };
 
   const loadSessionDetails = async (sessionId: number) => {
     try {
-      const [noFeedbackResponse, feedbackResponse, ratingResponse] = await Promise.all([
-        sessions.getNoFeedbackStudents(sessionId),
-        sessions.getSessionFeedback(sessionId),
-        sessions.getSessionRating(sessionId)
-      ]);
-      
+      const [noFeedbackResponse, feedbackResponse, ratingResponse] =
+        await Promise.all([
+          sessions.getNoFeedbackStudents(sessionId),
+          sessions.getSessionFeedback(sessionId),
+          sessions.getSessionRating(sessionId),
+        ]);
+
       setNoFeedbackStudents(noFeedbackResponse.data);
       setSessionFeedbacks(feedbackResponse.data);
       setSessionRating(ratingResponse.data);
     } catch (error) {
-      toast.error('Failed to load session details');
+      toast.error("Failed to load session details");
     }
   };
 
   const handleCreateSession = async () => {
     try {
       await sessions.create(newSessionDate);
-      toast.success('Session created successfully');
+      toast.success("Session created successfully");
       setShowCreateSession(false);
-      setNewSessionDate('');
+      setNewSessionDate("");
       loadSessions();
     } catch (error) {
-      toast.error('Failed to create session');
+      toast.error("Failed to create session");
     }
   };
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   const toggleFeedback = (feedbackId: number) => {
@@ -74,19 +90,33 @@ function TeacherDashboard() {
       <nav className="bg-white shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Calendar className="h-8 w-8 text-purple-600" />
-              <span className="ml-2 text-xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                Teacher Dashboard
-              </span>
+            <div className="flex items-center flex-shrink-0">
+              <div className="flex items-center space-x-3">
+                <MessageSquare className="h-8 w-8 text-indigo-600" />
+                <span className="text-xl font-bold bg-gradient-to-r text-black bg-clip-text text-transparent">
+                  VoiceBox
+                </span>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-gray-700">Welcome, {user?.name}</span>
+              <div className="flex items-center space-x-3">
+                <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-[2px] rounded-xl">
+                  <div className="bg-white p-1 rounded-lg">
+                    <Book className="h-5 w-5 text-indigo-600" />
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-gray-900">
+                    {user?.name}
+                  </span>
+                  <span className="text-xs text-gray-500">Teacher</span>
+                </div>
+              </div>
               <button
                 onClick={handleLogout}
-                className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+                className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 rounded-full transition-all duration-200"
               >
-                <LogOut className="h-5 w-5 mr-2" />
+                <LogOut className="h-4 w-4 mr-2" />
                 Logout
               </button>
             </div>
@@ -99,7 +129,9 @@ function TeacherDashboard() {
           <div className="space-y-6">
             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">Your Sessions</h2>
+                <h2 className="text-xl font-semibold text-gray-800">
+                  Your Sessions
+                </h2>
                 <button
                   onClick={() => setShowCreateSession(true)}
                   className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200"
@@ -111,7 +143,9 @@ function TeacherDashboard() {
 
               {showCreateSession && (
                 <div className="mb-6 p-4 border rounded-lg bg-purple-50">
-                  <h3 className="font-medium mb-3 text-purple-900">Create New Session</h3>
+                  <h3 className="font-medium mb-3 text-purple-900">
+                    Create New Session
+                  </h3>
                   <input
                     type="date"
                     value={newSessionDate}
@@ -141,15 +175,17 @@ function TeacherDashboard() {
                     key={session.id}
                     className={`bg-white rounded-lg border p-4 transition-colors duration-200 ${
                       selectedSession?.id === session.id
-                        ? 'border-purple-300 ring-1 ring-purple-300'
-                        : 'border-gray-200 hover:border-purple-200'
+                        ? "border-purple-300 ring-1 ring-purple-300"
+                        : "border-gray-200 hover:border-purple-200"
                     }`}
                   >
                     <div className="flex justify-between items-center">
                       <div>
-                        <p className="font-medium text-gray-800">Session #{session.id}</p>
+                        <p className="font-medium text-gray-800">
+                          Session #{session.id}
+                        </p>
                         <p className="text-sm text-gray-500">
-                          {format(new Date(session.date), 'PPP')}
+                          {format(new Date(session.date), "PPP")}
                         </p>
                       </div>
                       <button
@@ -159,8 +195,8 @@ function TeacherDashboard() {
                         }}
                         className={`flex items-center px-4 py-2 rounded-lg transition-colors duration-200 ${
                           selectedSession?.id === session.id
-                            ? 'bg-purple-100 text-purple-700'
-                            : 'bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600'
+                            ? "bg-purple-100 text-purple-700"
+                            : "bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600"
                         }`}
                       >
                         View Details
@@ -169,7 +205,9 @@ function TeacherDashboard() {
                   </div>
                 ))}
                 {teacherSessions.length === 0 && (
-                  <p className="text-center text-gray-500 py-4">No sessions created yet</p>
+                  <p className="text-center text-gray-500 py-4">
+                    No sessions created yet
+                  </p>
                 )}
               </div>
             </div>
@@ -186,14 +224,17 @@ function TeacherDashboard() {
                     <div className="flex items-center bg-yellow-50 px-4 py-2 rounded-lg">
                       <BarChart className="h-5 w-5 text-yellow-500 mr-2" />
                       <span className="font-medium text-yellow-700">
-                        Average Rating: {sessionRating.totalRating?.toFixed(1) || 0}
+                        Average Rating:{" "}
+                        {sessionRating.totalRating?.toFixed(1) || 0}
                       </span>
                     </div>
                   )}
                 </div>
 
                 <div className="mb-8">
-                  <h3 className="font-medium text-gray-700 mb-3">Students Without Feedback</h3>
+                  <h3 className="font-medium text-gray-700 mb-3">
+                    Students Without Feedback
+                  </h3>
                   <div className="space-y-2">
                     {noFeedbackStudents.map((student) => (
                       <div
@@ -202,8 +243,12 @@ function TeacherDashboard() {
                       >
                         <Users className="h-5 w-5 text-red-400 mr-3" />
                         <div>
-                          <p className="font-medium text-red-700">{student.name}</p>
-                          <p className="text-sm text-red-500">Pending Feedback</p>
+                          <p className="font-medium text-red-700">
+                            {student.name}
+                          </p>
+                          <p className="text-sm text-red-500">
+                            Pending Feedback
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -216,7 +261,9 @@ function TeacherDashboard() {
                 </div>
 
                 <div>
-                  <h3 className="font-medium text-gray-700 mb-3">Feedback Received</h3>
+                  <h3 className="font-medium text-gray-700 mb-3">
+                    Feedback Received
+                  </h3>
                   <div className="space-y-3">
                     {sessionFeedbacks.map((feedback) => (
                       <div
