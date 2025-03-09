@@ -67,7 +67,7 @@
 
 5. Start the backend server:
    ```bash
-   npm run dev
+   npm run start
    ```
 
 6. For the frontend:
